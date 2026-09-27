@@ -6,7 +6,7 @@
 /*   By: hclaude <hclaude@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 16:06:51 by hclaude           #+#    #+#             */
-/*   Updated: 2026/09/21 18:32:39 by hclaude          ###   ########.fr       */
+/*   Updated: 2026/09/26 20:32:26 by hclaude          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <net/if.h>
+#include <net/if_types.h>
+#include <net/if_dl.h>
 #include <ifaddrs.h>
 
 #define SOURCE_IP 0
@@ -36,7 +38,7 @@
 #define TARGET_IP 1
 #define TARGET_MAC 1
 
-typedef struct s_data
+	typedef struct s_data
 {
 	struct in_addr		ip[2];
 	unsigned char		mac[2][6];
