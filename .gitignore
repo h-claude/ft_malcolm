@@ -1,3 +1,9 @@
+# Vagrant
+.vagrant/
+
+# Claude Code persistent memory (kept on shared folder, not versioned)
+.claude-memory/
+
 # Prerequisites
 *.d
 

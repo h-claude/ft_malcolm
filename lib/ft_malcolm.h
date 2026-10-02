@@ -6,7 +6,7 @@
 /*   By: hclaude <hclaude@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 16:06:51 by hclaude           #+#    #+#             */
-/*   Updated: 2026/09/26 20:32:26 by hclaude          ###   ########.fr       */
+/*   Updated: 2026/09/29 23:29:14 by hclaude          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,15 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <linux/if_packet.h>
+#include <linux/if_ether.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <net/if.h>
-#include <net/if_types.h>
-#include <net/if_dl.h>
 #include <ifaddrs.h>
+#include <net/if_arp.h>
 
 #define SOURCE_IP 0
 #define SOURCE_MAC 0

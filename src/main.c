@@ -6,7 +6,7 @@
 /*   By: hclaude <hclaude@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/21 15:50:52 by hclaude           #+#    #+#             */
-/*   Updated: 2026/09/26 21:59:42 by hclaude          ###   ########.fr       */
+/*   Updated: 2026/09/30 01:09:47 by hclaude          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ printf family : formatted output functions (printf, fprintf, snprintf, ...).
 
 static int	is_candidate_link(struct ifaddrs *ifa)
 {
-	if (!ifa->ifa_addr || ifa->ifa_addr->sa_family != AF_LINK)
+	if (!ifa->ifa_addr || ifa->ifa_addr->sa_family != AF_PACKET)
 		return (0);
 	if (!(ifa->ifa_flags & IFF_UP) || !(ifa->ifa_flags & IFF_BROADCAST))
 		return (0);
 	if (ifa->ifa_flags & IFF_POINTOPOINT || ifa->ifa_flags & IFF_LOOPBACK)
 		return (0);
-	return (((struct sockaddr_dl *)ifa->ifa_addr)->sdl_type == IFT_ETHER);
+	return (((struct sockaddr_ll *)ifa->ifa_addr)->sll_hatype == ARPHRD_ETHER);
 }
 
 static int	has_valid_ipv4(struct ifaddrs *list, const char *name)
@@ -86,6 +86,9 @@ int	launch_the_scam(t_data *data)
 	struct ifaddrs	*list;
 	char			*interface;
 	unsigned int	index;
+	int				sockfd;
+
+	sockfd = 0;
 
 	if (getifaddrs(&list) == -1)
 		return (print_error(strerror(errno)));
@@ -101,9 +104,26 @@ int	launch_the_scam(t_data *data)
 		return (print_error(strerror(errno)));
 	(void)data;
 	freeifaddrs(list);
+	sockfd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
+	if (sockfd == -1)
+		return (print_error(strerror(errno)));
+	while (1)
+	{
+		char buffer[42];
+		recv(sockfd, buffer, 42, 0);
+		printf("-------------------Received ARP packet----------------------------\n");
+		printf("Source MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+			buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11]);
+		printf("Source IP: %d.%d.%d.%d\n",
+			buffer[28], buffer[29], buffer[30], buffer[31]);
+		printf("Target MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+			buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
+		printf("Target IP: %d.%d.%d.%d\n",
+			buffer[38], buffer[39], buffer[40], buffer[41]);
+		printf("ARP operation: %s\n", (buffer[20] == 1 && buffer[21] == 0) ? "Request" : "Reply");
+	}
 
-	int sock = socket(PF_LOCAL, SOCK_RAW, SOCK_RAW);
-	setsockopt(sock, )
+
 
 	// Open the socket
 	// listen ARP requests
